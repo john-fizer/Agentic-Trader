@@ -1,0 +1,87 @@
+# D.A.T.A. Risk Configuration
+# Global risk limits and portfolio constraints
+
+risk_limits:
+  # Per-trade limits
+  max_risk_per_trade_percent: 1.0
+  max_risk_per_trade_amount: 1000.0  # Optional absolute limit
+
+  # Portfolio limits
+  max_portfolio_heat_percent: 6.0  # Total open risk
+  max_gross_exposure_percent: 200.0  # Long + Short / Equity
+  max_net_exposure_percent: 100.0  # (Long - Short) / Equity
+  max_long_exposure_percent: 150.0
+  max_short_exposure_percent: 100.0
+
+  # Position limits
+  max_positions: 20
+  max_position_size_percent: 10.0
+  max_correlated_positions: 5
+
+  # Concentration limits
+  max_sector_exposure_percent: 30.0
+  max_single_name_exposure_percent: 15.0
+
+  # Drawdown limits
+  max_daily_drawdown_percent: 3.0
+  max_weekly_drawdown_percent: 5.0
+  strategy_pause_drawdown_percent: 10.0
+
+# Position sizing
+sizing:
+  use_kelly_sizing: false
+  kelly_fraction: 0.25
+  min_position_size: 100.0
+
+  # Regime adjustments
+  reduce_size_in_high_vol: true
+  high_vol_size_multiplier: 0.5
+  reduce_size_in_choppy: true
+  choppy_size_multiplier: 0.75
+
+# Circuit breakers
+circuit_breakers:
+  kill_switch_drawdown_percent: 5.0
+  kill_switch_loss_streak: 10
+  max_daily_trades: 100
+  max_orders_per_minute: 60
+
+  # Auto-pause conditions
+  pause_on_slippage_anomaly: true
+  slippage_anomaly_threshold: 0.5  # 0.5% average slippage
+  pause_on_fill_rate_drop: true
+  min_fill_rate: 0.9
+
+# Correlation and hedging
+correlation:
+  max_correlation_within_portfolio: 0.7
+  enable_hedging: true
+  hedge_threshold_percent: 80.0  # Hedge when net exposure > 80%
+  hedge_instrument: SPY  # Instrument to use for hedging
+
+# Sector definitions
+sectors:
+  technology:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - NVDA
+    - META
+    - AMD
+  financials:
+    - JPM
+    - BAC
+    - GS
+    - MS
+  energy:
+    - XOM
+    - CVX
+    - COP
+  consumer:
+    - AMZN
+    - TSLA
+    - WMT
+  healthcare:
+    - JNJ
+    - UNH
+    - PFE

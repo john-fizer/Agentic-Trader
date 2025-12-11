@@ -1,0 +1,134 @@
+# D.A.T.A. Strategy Configuration
+# Each strategy has its own section with parameters
+
+strategies:
+  # Trend Following Strategy
+  trend_following:
+    enabled: true
+    status: active
+    style: trend_following
+    asset_classes:
+      - equities
+      - futures
+    timeframes:
+      - intraday
+      - swing
+
+    # Risk parameters
+    max_position_size_percent: 5.0
+    default_stop_percent: 2.0
+    default_target_percent: 6.0
+    min_reward_risk: 2.0
+
+    # Regime compatibility
+    allowed_regimes:
+      - trending
+    avoid_panic: true
+
+    # Signal parameters
+    min_signal_strength: 0.6
+    cooldown_minutes: 60
+
+    # Strategy-specific parameters
+    params:
+      ma_fast: 10
+      ma_slow: 50
+      adx_threshold: 25
+      trend_confirmation_bars: 3
+
+  # Mean Reversion Strategy
+  mean_reversion:
+    enabled: true
+    status: active
+    style: mean_reversion
+    asset_classes:
+      - equities
+    timeframes:
+      - intraday
+      - scalp
+
+    max_position_size_percent: 3.0
+    default_stop_percent: 1.5
+    default_target_percent: 2.0
+    min_reward_risk: 1.2
+
+    allowed_regimes:
+      - mean_reverting
+      - choppy
+    avoid_panic: true
+
+    min_signal_strength: 0.5
+    cooldown_minutes: 30
+
+    params:
+      bb_period: 20
+      bb_std: 2.0
+      rsi_oversold: 30
+      rsi_overbought: 70
+      min_squeeze_bars: 5
+
+  # Momentum Strategy
+  momentum:
+    enabled: true
+    status: active
+    style: momentum
+    asset_classes:
+      - equities
+      - crypto
+    timeframes:
+      - swing
+
+    max_position_size_percent: 4.0
+    default_stop_percent: 3.0
+    default_target_percent: 9.0
+    min_reward_risk: 2.5
+
+    allowed_regimes:
+      - trending
+    avoid_panic: true
+
+    min_signal_strength: 0.7
+    cooldown_minutes: 240
+
+    params:
+      lookback_period: 20
+      min_momentum_percentile: 80
+      volume_confirmation: true
+      breakout_threshold: 0.02
+
+  # Volatility Strategy (Options)
+  volatility:
+    enabled: false  # Disabled by default
+    status: paper_only
+    style: volatility
+    asset_classes:
+      - options
+    timeframes:
+      - swing
+
+    max_position_size_percent: 2.0
+    default_stop_percent: 50.0  # Options can be volatile
+    default_target_percent: 100.0
+    min_reward_risk: 1.5
+
+    allowed_regimes:
+      - trending
+      - mean_reverting
+      - choppy
+    avoid_panic: false  # Vol strategies may profit from panic
+
+    min_signal_strength: 0.6
+    cooldown_minutes: 120
+
+    params:
+      iv_rank_threshold: 30
+      iv_percentile_threshold: 25
+      delta_range: [0.2, 0.4]
+      min_dte: 14
+      max_dte: 60
+
+# Global strategy settings
+global:
+  max_strategies_active: 3
+  max_signals_per_cycle: 5
+  strategy_correlation_limit: 0.7

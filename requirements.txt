@@ -1,0 +1,54 @@
+# Core
+pydantic>=2.0
+python-dotenv>=1.0
+PyYAML>=6.0
+
+# Data processing
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+
+# Time series & financial
+ta>=0.10
+pandas-ta>=0.3
+
+# Machine Learning
+scikit-learn>=1.3
+torch>=2.0
+statsmodels>=0.14
+
+# ML tracking
+mlflow>=2.0
+
+# Database
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+redis>=4.5
+
+# Trading APIs
+ccxt>=4.0
+alpaca-trade-api>=3.0
+
+# Messaging & async
+celery>=5.3
+
+# Logging & monitoring
+loguru>=0.7
+structlog>=23.0
+
+# HTTP & API
+httpx>=0.24
+aiohttp>=3.8
+
+# Backtesting & analytics
+vectorbt>=0.26
+quantstats>=0.0.62
+empyrical>=0.5
+
+# Development dependencies
+pytest>=7.0
+pytest-cov>=4.0
+pytest-asyncio>=0.21
+black>=23.0
+ruff>=0.1
+mypy>=1.5

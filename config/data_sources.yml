@@ -1,0 +1,160 @@
+# D.A.T.A. Data Sources Configuration
+# Configure market data providers and storage
+
+# Market data providers
+providers:
+  # Alpaca for US equities
+  alpaca:
+    enabled: true
+    type: alpaca
+    paper_trading: true
+    data_feed: iex  # iex or sip
+    api_key_env: ALPACA_API_KEY
+    api_secret_env: ALPACA_API_SECRET
+    base_url: https://paper-api.alpaca.markets
+
+    # Asset classes
+    asset_classes:
+      - equities
+      - options
+
+    # Rate limits
+    max_requests_per_minute: 200
+
+  # CCXT for crypto
+  ccxt:
+    enabled: true
+    type: ccxt
+    exchange: binance
+    sandbox: true
+    api_key_env: BINANCE_API_KEY
+    api_secret_env: BINANCE_API_SECRET
+
+    asset_classes:
+      - crypto
+
+    max_requests_per_minute: 1200
+
+  # Interactive Brokers (optional)
+  ib:
+    enabled: false
+    type: ib
+    host: 127.0.0.1
+    port: 7497
+    client_id: 1
+
+    asset_classes:
+      - equities
+      - options
+      - futures
+
+# Historical data storage
+storage:
+  # TimescaleDB for time-series
+  timescale:
+    enabled: true
+    host_env: TIMESCALE_HOST
+    port: 5432
+    database: trading_data
+    user_env: TIMESCALE_USER
+    password_env: TIMESCALE_PASSWORD
+
+    # Retention policies
+    retention_days:
+      tick: 7
+      minute: 90
+      hourly: 365
+      daily: 3650
+
+  # Redis for real-time cache
+  redis:
+    enabled: true
+    host_env: REDIS_HOST
+    port: 6379
+    password_env: REDIS_PASSWORD
+
+    # Cache settings
+    quote_ttl_seconds: 5
+    mso_ttl_seconds: 60
+
+  # Parquet files for archive
+  parquet:
+    enabled: true
+    base_path: data/archive
+    compression: snappy
+    partition_by: [year, month]
+
+# Data subscriptions
+subscriptions:
+  # Equities
+  equities:
+    symbols:
+      - SPY
+      - QQQ
+      - IWM
+      - DIA
+      - AAPL
+      - MSFT
+      - GOOGL
+      - AMZN
+      - NVDA
+      - META
+      - TSLA
+      - JPM
+      - BAC
+
+    timeframes:
+      - 1m
+      - 5m
+      - 15m
+      - 1h
+      - 1d
+
+    data_types:
+      - ohlcv
+      - quotes
+      - trades
+
+  # Futures
+  futures:
+    symbols:
+      - ES
+      - NQ
+      - CL
+      - GC
+      - ZB
+
+    timeframes:
+      - 1m
+      - 5m
+      - 1h
+      - 1d
+
+  # Crypto
+  crypto:
+    symbols:
+      - BTC/USDT
+      - ETH/USDT
+      - SOL/USDT
+
+    timeframes:
+      - 1m
+      - 5m
+      - 15m
+      - 1h
+      - 4h
+      - 1d
+
+  # Market internals
+  internals:
+    - VIX
+    - VVIX
+    - PUT_CALL_RATIO
+    - ADVANCE_DECLINE
+
+# Economic calendar
+calendar:
+  enabled: true
+  provider: investing.com
+  importance_filter: [high, medium]
+  countries: [US, EU, CN]
