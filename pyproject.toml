@@ -37,7 +37,7 @@ dependencies = [
 
     # Time series & financial
     "ta>=0.10",  # Technical analysis
-    "pandas-ta>=0.3",
+    "pandas-ta>=0.4.67b0",
 
     # Machine Learning
     "scikit-learn>=1.3",
@@ -67,10 +67,10 @@ dependencies = [
     "httpx>=0.24",
     "aiohttp>=3.8",
 
-    # Backtesting & analytics
-    "vectorbt>=0.26",
-    "quantstats>=0.0.62",
-    "empyrical>=0.5",
+    # Backtesting & analytics (commented out due to Python 3.12 compatibility issues)
+    # "vectorbt>=0.26",
+    # "quantstats>=0.0.62",
+    # "empyrical>=0.5",
 ]
 
 [project.optional-dependencies]
