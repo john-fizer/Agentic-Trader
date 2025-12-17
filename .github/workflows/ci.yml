@@ -72,6 +72,8 @@ jobs:
     - name: Type check with mypy
       run: |
         mypy src
+      # Continue on error to allow existing type issues while still reporting them
+      # TODO: Fix type issues and remove continue-on-error flag
       continue-on-error: true
 
   build:
