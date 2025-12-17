@@ -1,5 +1,9 @@
 # D.A.T.A. - Domain-Aware Trading Agent
 
+[![CI](https://github.com/john-fizer/Agentic-Trader/actions/workflows/ci.yml/badge.svg)](https://github.com/john-fizer/Agentic-Trader/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A multi-agent, domain-aware trading system designed to behave like a miniature hedge fund:
 regime-aware, risk-first, multi-timeframe, multi-asset, and continuously learning.
 
@@ -190,6 +194,38 @@ Agentic-Trader/
 - Kill switch on 5% daily drawdown
 - Auto-pause after 10 consecutive losses
 - Max 100 trades per day
+
+## GitHub Actions Workflows
+
+This repository includes automated workflows for CI/CD and running the trading system:
+
+### Continuous Integration (CI)
+Automatically runs on every push and pull request:
+- Runs tests across Python 3.10, 3.11, and 3.12
+- Checks code formatting with Black
+- Lints code with Ruff
+- Type checks with MyPy
+- Builds the package
+
+### Run Trading System (Manual)
+Manually trigger the trading system via GitHub Actions:
+1. Go to the "Actions" tab
+2. Select "Run Trading System"
+3. Click "Run workflow"
+4. Configure duration and log level
+5. View logs in workflow artifacts
+
+**Required Secrets**: Configure in repository settings:
+- `ALPACA_API_KEY` and `ALPACA_API_SECRET` (required)
+- Optional: `BINANCE_API_KEY`, `BINANCE_API_SECRET`, database credentials
+
+### Scheduled Trading (Optional)
+Run the system automatically on a schedule (disabled by default):
+- Edit `.github/workflows/scheduled-trading.yml`
+- Uncomment the schedule section
+- Configure for your timezone and trading hours
+
+See [.github/workflows/README.md](.github/workflows/README.md) for detailed documentation.
 
 ## Development
 

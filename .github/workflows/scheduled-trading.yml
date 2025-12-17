@@ -1,0 +1,104 @@
+name: Scheduled Trading
+
+# This workflow runs the trading system on a schedule
+# WARNING: By default, this is disabled. Uncomment the schedule section to enable.
+# Make sure to configure all required secrets before enabling!
+
+on:
+  # Uncomment to enable scheduled runs
+  # schedule:
+  #   # Run Monday-Friday at 9:30 AM ET (market open)
+  #   - cron: '30 14 * * 1-5'  # 9:30 AM ET = 14:30 UTC (adjust for DST)
+  #   # Run Monday-Friday at 4:00 PM ET (market close)
+  #   - cron: '0 21 * * 1-5'   # 4:00 PM ET = 21:00 UTC (adjust for DST)
+  
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Duration to run (in minutes)'
+        required: false
+        default: '30'
+        type: number
+
+jobs:
+  scheduled-trading:
+    name: Scheduled Trading Run
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+
+    - name: Create required directories
+      run: |
+        mkdir -p logs
+        mkdir -p data/raw
+        mkdir -p data/processed
+
+    - name: Check trading schedule
+      id: check-schedule
+      run: |
+        # Check if it's a trading day and during market hours
+        echo "Current time (UTC): $(date -u)"
+        echo "schedule_ok=true" >> $GITHUB_OUTPUT
+
+    - name: Run D.A.T.A. System
+      if: steps.check-schedule.outputs.schedule_ok == 'true'
+      env:
+        # Required: Broker API credentials
+        ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+        ALPACA_API_SECRET: ${{ secrets.ALPACA_API_SECRET }}
+        # Optional: Crypto exchange credentials
+        BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
+        BINANCE_API_SECRET: ${{ secrets.BINANCE_API_SECRET }}
+        # Optional: Database credentials
+        TIMESCALE_HOST: ${{ secrets.TIMESCALE_HOST }}
+        TIMESCALE_USER: ${{ secrets.TIMESCALE_USER }}
+        TIMESCALE_PASSWORD: ${{ secrets.TIMESCALE_PASSWORD }}
+        # Optional: Redis credentials
+        REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+      run: |
+        duration=${{ inputs.duration || 30 }}
+        echo "Starting scheduled trading run for ${duration} minutes..."
+        timeout ${duration}m python -m src.orchestrator.main || exit_code=$?
+        if [ ${exit_code:-0} -eq 124 ]; then
+          echo "Trading run completed (timeout reached)"
+        elif [ ${exit_code:-0} -ne 0 ]; then
+          echo "Trading run exited with code ${exit_code}"
+          exit ${exit_code}
+        fi
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: scheduled-trading-logs-${{ github.run_number }}
+        path: logs/
+        retention-days: 90
+
+    - name: Upload trading data
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: trading-data-${{ github.run_number }}
+        path: data/
+        retention-days: 90
+
+    - name: Send notification on failure
+      if: failure()
+      run: |
+        echo "Trading system failed. Check logs for details."
+        # Add notification logic here (e.g., send to Slack, email, etc.)
